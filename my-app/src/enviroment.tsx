@@ -1,0 +1,1 @@
+export const API_URL: String = 'https://saka-assessment1.herokuapp.com/';

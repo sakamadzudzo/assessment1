@@ -1,7 +1,10 @@
+import User from "./entities/user";
+
 interface State {
-    id: number
     tokenTimer: number,
     showPassword: boolean;
+    user: User,
+    token: String
 }
 
 export default State;
