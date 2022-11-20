@@ -1,30 +1,15 @@
-import React, { useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { BrowserRouter as Router, Routes, Route, useNavigate, useHref } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes as appRoutes } from "./routes";
 import Layout from "./components/Layout";
 import Theme from "./custome-theme";
-import Login from "./pages/Login";
-import State from "./State";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import myLocalStorage from "./myLocalStorage";
 
 function App() {
-  const [values, setValues] = React.useState<State>({
-    tokenTimer: 0,
-    showPassword: false,
-    user: {
-      id: 0, username: '',
-      name: '',
-      dob: '',
-      gender: ''
-    },
-    token: ''
-  })
 
-  let navigate = useNavigate;
-
-  if (!values.token && window.location.pathname !== '/login') {
+  if (!myLocalStorage.getItem('token') && window.location.pathname !== '/login') {
     window.location.href = '/login';
 
   }

@@ -1,44 +1,33 @@
-import React, { ReactElement, FC, useState } from "react";
+import { ReactElement, FC, useState } from "react";
 import { Box, Typography, TextField, Grid, Button, InputAdornment, IconButton } from "@mui/material";
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import State from './../State';
+import LoadingButton from '@mui/lab/LoadingButton';
 import authService from "../services/auth-service";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from "react-router-dom";
+import myLocalStorage from "../myLocalStorage";
 
 const Home: FC<any> = (): ReactElement => {
     const [username, setUsername] = useState('');
-    const required = (value: any) => {
-        if (!value) {
-            return (
-                <div className="alert alert-danger" role="alert">
-                    This field is required!
-                </div>
-            );
-        }
-    };
+    // const required = (value: any) => {
+    //     if (!value) {
+    //         return (
+    //             <div className="alert alert-danger" role="alert">
+    //                 This field is required!
+    //             </div>
+    //         );
+    //     }
+    // };
     const [password, setPassword] = useState('');
-    const [values, setValues] = React.useState<State>({
-        tokenTimer: 0,
-        showPassword: false,
-        user: {
-            id: 0, username: '',
-            name: '',
-            dob: '',
-            gender: ''
-        },
-        token: ''
-    })
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    let navigate = useNavigate;
-
-    if (values.token && window.location.pathname !== '/') {
-        window.location.href = '/login';
+    if (myLocalStorage.getItem('token') && window.location.pathname !== '/') {
+        window.location.href = '/';
     }
 
     const onChangeUsername = (e: any) => {
@@ -50,20 +39,24 @@ const Home: FC<any> = (): ReactElement => {
     }
 
     const handleClickShowPassword = () => {
-        setValues({
-            ...values,
-            showPassword: !values.showPassword,
-        });
+        setShowPassword(!showPassword);
     };
 
     const handleLogin = () => {
+        setLoading(!loading);
         if (username && password) {
             authService.login(username, password).then((response) => {
-                setValues({ user: response.data.data, tokenTimer: 300, showPassword: false, token: response.data.token })
+                setLoading(!loading);
+                window.location.href = '/';
             })
+                .catch(err => {
+                    toast(err.response.data.message);
+                    console.log(err);
+                });
         } else {
             toast("Please enter username and password");
             console.log("Please enter username and password");
+            setLoading(!loading);
         }
     }
 
@@ -100,13 +93,24 @@ const Home: FC<any> = (): ReactElement => {
                                 onClick={handleClickShowPassword}
                                 edge="end"
                             >
-                                {values.showPassword ? <VisibilityOffRoundedIcon /> : <VisibilityRoundedIcon />}
+                                {showPassword ? <VisibilityOffRoundedIcon /> : <VisibilityRoundedIcon />}
                             </IconButton>
                         </InputAdornment>
                     )
-                }} type={values.showPassword ? 'text' : 'password'} onClick={handleClickShowPassword}
+                }} type={showPassword ? 'text' : 'password'} onClick={handleClickShowPassword}
                     sx={{ pb: 2 }} onChange={onChangePassword} />
-                <Button sx={{ color: "secondary.dark" }} size="large" onClick={handleLogin}>Login <LoginRoundedIcon></LoginRoundedIcon></Button>
+
+                <LoadingButton
+                    color="secondary"
+                    size="large"
+                    onClick={handleLogin}
+                    endIcon={<LoginRoundedIcon />}
+                    loading={loading}
+                    loadingPosition="end"
+                    variant="contained"
+                >
+                    Login
+                </LoadingButton>
             </Grid>
         </Box>
     );

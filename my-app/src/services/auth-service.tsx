@@ -1,7 +1,6 @@
 import axios from "axios";
-import React from "react";
-import State from "../State";
 import { API_URL } from './../enviroment';
+import myLocalStorage from "../myLocalStorage";
 
 class AuthService {
     login(username: String, password: String) {
@@ -12,13 +11,17 @@ class AuthService {
             })
             .then(response => {
                 console.log(response.data);
-                // setValues({ user: response.data.data, tokenTimer: 300, showPassword: false, token: response.data.token })
+                myLocalStorage.setItem("user", response.data.data, 300);
+                myLocalStorage.setItem("token", response.data.token, 300);
+                const AuthStr = 'Bearer '.concat(response.data.token);
+                myLocalStorage.setItem('authHeader', AuthStr, 300);
                 return response.data;
             });
     }
 
     logout() {
-        // setValues({ user: { id: 0, username: '', name: '', dob: '', gender: '' }, tokenTimer: 0, showPassword: false, token: '' });
+        myLocalStorage.clear();
+        window.location.href = '/';
     }
 }
 

@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 
 // other
 import { FC } from "react";
+import myLocalStorage from "./myLocalStorage";
+import Logout from "./pages/Logout";
 
 // interface
 interface Route {
@@ -15,8 +17,25 @@ interface Route {
     component: FC<{}>
 }
 
-export const routes: Array<Route> = [
+var condRoutes: Array<Route> = [];
+
+if (myLocalStorage.getItem('token')) {
+    condRoutes = [{
+        key: 'home-route',
+        title: 'Home',
+        path: '/',
+        enabled: true,
+        component: Home
+    },
     {
+        key: 'logout-route',
+        title: 'Logout',
+        path: '/logout',
+        enabled: true,
+        component: Logout
+    }]
+} else {
+    condRoutes = [{
         key: 'home-route',
         title: 'Home',
         path: '/',
@@ -29,12 +48,7 @@ export const routes: Array<Route> = [
         path: '/login',
         enabled: true,
         component: Login
-    },
-    // {
-    //     key: 'initial-route',
-    //     title: 'Initial Page',
-    //     path: '/',
-    //     enabled: true,
-    //     component: App
-    // }
-]
+    },]
+}
+
+export const routes: Array<Route> = condRoutes;
