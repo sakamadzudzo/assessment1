@@ -12,7 +12,7 @@ jobs:
       - run: cd my-app && npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          entryPoint: /my-app
+          entryPoint: ./my-app
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ASSESSMENT1_FB73D }}'
           projectId: assessment1-fb73d
