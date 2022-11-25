@@ -50,13 +50,15 @@ const Home: FC<any> = (): ReactElement => {
                 window.location.href = '/';
             })
                 .catch(err => {
-                    toast(err.response.data.message);
                     console.log(err);
+                    toast.error(err.response.data.message);
+                    setLoading(false);
+                    console.log(loading);
                 });
         } else {
-            toast("Please enter username and password");
+            toast.error("Please enter username and password");
             console.log("Please enter username and password");
-            setLoading(!loading);
+            setLoading(false);
         }
     }
 
