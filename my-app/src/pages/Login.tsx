@@ -45,11 +45,11 @@ const Home: FC<any> = (): ReactElement => {
     const handleLogin = () => {
         setLoading(!loading);
         if (username && password) {
-            authService.login(username, password).then((response) => {
+            authService.login(username, password).then(() => {
                 setLoading(!loading);
                 window.location.href = '/';
             })
-                .catch(err => {
+                .catch((err: any) => {
                     console.log(err);
                     toast.error(err.response.data.message);
                     setLoading(false);
